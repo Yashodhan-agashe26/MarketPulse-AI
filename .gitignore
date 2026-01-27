@@ -1,0 +1,23 @@
+# General
+.DS_Store
+*.log
+__pycache__/
+*.py[cod]
+
+# Backend
+backend/venv/
+backend/.env
+backend/marketpulse.db
+*.db
+backend/backend_output.log
+backend/pip_list.txt
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# IDE
+.vscode/
+.idea/
