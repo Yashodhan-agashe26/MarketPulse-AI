@@ -198,6 +198,12 @@ graph TD
         API -->|Requests Data| MarketData[Market Data Module]
         API -->|Scrapes News| Scraper[News Scraper]
         API -->|Chat or Summary| AI_Engine["AI Engine (Ollama/Llama3)"]
+        
+        %% RAG Subsystem
+        AI_Engine <-->|Context Retrieval| RAG[Dynamic RAG Engine]
+        RAG <-->|Store/Retrieve| VectorDB[(ChromaDB)]
+        RAG -->|Dynamic Fetch| MarketData
+        
         API -->|Auth or User Data| DB[(SQLite Database)]
         
         Scheduler[APScheduler] -->|Triggers Every 1m| NotificationMgr[Notification Manager]
@@ -213,6 +219,34 @@ graph TD
     AI_Engine -->|Local Inference| Ollama["Ollama Service (Llama 3.2)"]
     
     Frontend -.->|Polls every 5s| API
+```
+
+### 1. Dynamic RAG (Self-Learning) Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant AI as AI Engine (Llama 3.2)
+    participant RAG as RAG Engine
+    participant DB as ChromaDB
+    participant YF as Yahoo Finance
+
+    User->>AI: "Tell me about Dabur results"
+    AI->>RAG: Extract Ticker ("DABUR.NS")
+    RAG->>DB: Check if data exists?
+    alt Data Missing
+        DB-->>RAG: No Data
+        RAG->>YF: Fetch Quarterly Financials
+        YF-->>RAG: Revenue, Net Income, etc.
+        RAG->>DB: Ingest (Chunk & Embed)
+    else Data Exists
+        DB-->>RAG: Metadata OK
+    end
+    
+    RAG->>DB: Retrieve Context (Semantic Search)
+    DB-->>RAG: Relevant Chunks
+    RAG-->>AI: Financial Context
+    AI-->>User: Fact-based Answer
 ```
 
 ### 🧩 Component Breakdown
