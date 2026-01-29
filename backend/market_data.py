@@ -6,7 +6,7 @@ import time
 # In-memory cache for market data
 MARKET_CACHE = None
 LAST_MARKET_FETCH = 0
-MARKET_CACHE_TTL = 60 # 1 minute cache for overall market data
+MARKET_CACHE_TTL = 10 # 10 seconds cache for overall market data
 
 def get_market_data():
     """

@@ -100,10 +100,10 @@ function Dashboard({ onLogout, isAuthenticated, userName }) {
         const interval = setInterval(() => {
             // Only refresh news if on first page and no active search
             if (currentPage === 1 && !newsSearchQuery) {
-                fetchNews(1, "");
+                fetchNews(1, "", true);
             }
             fetchMarketData();
-        }, 30000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [currentPage, newsSearchQuery]);
@@ -234,8 +234,8 @@ function Dashboard({ onLogout, isAuthenticated, userName }) {
     }, [chatHistory, isChatOpen]);
 
 
-    const fetchNews = async (page = 1, query = "") => {
-        setLoadingNews(true);
+    const fetchNews = async (page = 1, query = "", isUpdate = false) => {
+        if (!isUpdate) setLoadingNews(true);
         try {
             const params = {
                 page: page,
@@ -298,7 +298,7 @@ function Dashboard({ onLogout, isAuthenticated, userName }) {
         } catch (err) {
             console.error("Error fetching news:", err);
         } finally {
-            setLoadingNews(false);
+            if (!isUpdate) setLoadingNews(false);
         }
     };
 
