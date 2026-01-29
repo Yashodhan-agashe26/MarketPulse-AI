@@ -6,6 +6,18 @@ MarketPulse AI is a comprehensive web application that aggregates real-time fina
 
 ---
 
+## 🎯 Problem Statement
+
+In the fast-paced world of Indian stock markets, retail investors often face:
+1.  **Information Overload**: Too many news sources, making it hard to filter relevant information.
+2.  **Delayed Insights**: Critical news often reaches traders after the market has already reacted.
+3.  **Lack of Sentiment Context**: Understanding whether a news piece is "Bullish" or "Bearish" requires deep financial literacy.
+4.  **Fragmented Tools**: Investors switch between news apps, technical charting tools, and AI assistants.
+
+**MarketPulse AI solves this** by providing a unified platform that aggregates real-time news, filters it based on your portfolio, analyzes sentiment using AI, and delivers instant alerts—all in one place.
+
+---
+
 ## 🌟 How It Works: The "A to Z" Workflow
 
 ### 1. Data Ingestion (The Scraper)
@@ -159,6 +171,71 @@ MarketPulseAI-main/
 │
 └── README.md
 ```
+
+---
+
+## 🏗️ System Architecture & Workflow
+
+This diagram illustrates how data flows from external sources through our backend pipeline to the user interface.
+
+```mermaid
+graph TD
+    User([User]) -->|Interacts| Frontend["React Frontend (Vite)"]
+    Frontend -->|HTTP Requests| API["FastAPI Backend"]
+
+    subgraph Backend
+        API -->|Requests Data| MarketData[Market Data Module]
+        API -->|Scrapes News| Scraper[News Scraper]
+        API -->|Chat or Summary| AI_Engine["AI Engine (Ollama/Llama3)"]
+        API -->|Auth or User Data| DB[(SQLite Database)]
+        
+        Scheduler[APScheduler] -->|Triggers Every 1m| NotificationMgr[Notification Manager]
+        NotificationMgr -->|Checks| DB
+        NotificationMgr -->|Filters News| Scraper
+        NotificationMgr -->|Sends Alerts| EmailSvc["Email Service (SMTP)"]
+    end
+
+    MarketData -->|Fetches Prices or Financials| Yahoo["Yahoo Finance API"]
+    Scraper -->|Scrapes Content| Moneycontrol["Moneycontrol Website"]
+    EmailSvc -->|Sends Email| GmailSMTP["Gmail SMTP Server"]
+    
+    AI_Engine -->|Local Inference| Ollama["Ollama Service (Llama 3.2)"]
+    
+    Frontend -.->|Polls every 5s| API
+```
+
+### 🧩 Component Breakdown
+
+#### 1. Frontend (User Interface)
+*   **Technology**: React.js + Vite + Tailwind CSS.
+*   **Role**: Displays the dashboard, real-time ticker, and news feed.
+*   **Interaction**: It polls the backend every **5 seconds** for silent updates on market indices (Nifty/Sensex) and news.
+*   **AI Chat**: Sends user queries to the backend, which forwards them to the local LLM.
+
+#### 2. Backend (The Brain)
+*   **Technology**: FastAPI (Python).
+*   **Role**: Orchestrates all services. It exposes endpoints for:
+    *   `/news`: Fetched from the scraper or cache.
+    *   `/market`: Real-time data from Yahoo Finance.
+    *   `/chat`: Context-aware responses from Ollama.
+    *   `/stock/{symbol}/financials`: Quarterly results data.
+
+#### 3. Data Pipeline & Scraper
+*   **Technology**: BeautifulSoup4 + Requests.
+*   **Role**: Automatically scrapes **MoneyControl** for the latest financial news.
+*   **Caching**: News is cached in a JSON file to reduce latency and avoid hitting external rate limits.
+
+#### 4. AI Engine (Local Intelligence)
+*   **Components**: 
+    *   **Ollama (Llama 3.2)**: Handles summarization and the Q&A chatbot. Running locally ensures data privacy and zero API costs.
+    *   **FinBERT**: A specialized BERT model running in the backend to tag every news article with sentiment (Positive/Negative/Neutral).
+
+#### 5. Notification System
+*   **Technology**: APScheduler + SMTP.
+*   **Workflow**:
+    1.  Runs every **1 minute**.
+    2.  Checks specific keywords in your **Watchlist** against new articles.
+    3.  If a match is found (and not sent previously), it triggers an HTML email alert via Gmail SMTP.
 
 ---
 
