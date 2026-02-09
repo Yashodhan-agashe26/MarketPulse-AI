@@ -111,6 +111,22 @@ Never miss a market-moving update.
 
 ---
 
+Minimum Requirements (might be slow)
+RAM: 8 GB (The system will likely rely on swap memory during heavy tasks).
+CPU: Modern Quad-Core Processor (Intel i5 8th Gen / Ryzen 5 2000 series or equivalent).
+GPU: Integrated Graphics (AI responses will take a few seconds to generate via CPU).
+Storage: 10 GB free space (SSD highly recommended).
+OS: Windows, Mac (M-series preferred), or Linux.
+
+Recommended Requirements 
+RAM: 16 GB (Allows keeping the AI model, database, and n8n all in memory without slowing down).
+CPU: 6-Core Processor or better (Intel i5 12th Gen / Ryzen 5 5000 series / Apple M1 or better).
+GPU: NVIDIA RTX Card with 4GB+ VRAM (For instant AI responses).
+Note: If you are on a Mac, any M1/M2/M3 chip works.
+Storage: 20 GB free SSD space.
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
